@@ -1,0 +1,82 @@
+services:
+  # MinIO - Stockage objet S3-compatible
+  minio:
+    image: minio/minio:latest
+    container_name: minio-poc
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ADDRESS: ":9000"
+      MINIO_CONSOLE_ADDRESS: ":9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 10s
+    networks:
+      - cantaloupe-network
+
+  # Cantaloupe - Serveur d'images IIIF
+  cantaloupe:
+    image: uclalibrary/cantaloupe:5.0.5
+    container_name: cantaloupe-poc
+    ports:
+      - "8182:8182"
+    environment:
+      CANTALOUPE_CONFIG: /etc/cantaloupe.properties
+    volumes:
+      - ./cantaloupe.properties:/etc/cantaloupe.properties:ro
+      - cantaloupe_cache:/var/cache/cantaloupe
+      - cantaloupe_logs:/var/log/cantaloupe
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - cantaloupe-network
+
+
+  # Client MinIO pour initialiser les buckets
+  minio-init:
+    image: minio/mc:latest
+    container_name: minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Waiting for MinIO to be ready...';
+      sleep 10;
+      until /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin123; do 
+        echo 'Retrying MinIO connection...' && sleep 2; 
+      done;
+      echo 'MinIO connected, creating bucket...';
+      /usr/bin/mc mb myminio/images --ignore-existing;
+      /usr/bin/mc anonymous set public myminio/images;
+      echo 'Copying sample image if exists...';
+      if [ -f /sample-images/*.* ]; then
+        /usr/bin/mc cp /sample-images/*.* myminio/images/;
+      fi;
+      echo 'MinIO initialized successfully';
+      exit 0;
+      "
+    volumes:
+      - ./sample-images:/sample-images:ro
+    networks:
+      - cantaloupe-network
+
+volumes:
+  minio_data:
+  cantaloupe_cache:
+  cantaloupe_logs:
+
+networks:
+  cantaloupe-network:
+    driver: bridge

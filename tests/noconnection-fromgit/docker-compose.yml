@@ -1,0 +1,48 @@
+---
+services:
+
+  cantaloupe:
+    container_name: iiif-cantaloupe
+    build: .
+    restart: unless-stopped
+    environment:
+      JAVA_OPTS: "-Xmx2G -Xms2G"
+      AWS_ACCESS_KEY_ID: minio1234
+      AWS_SECRET_ACCESS_KEY: minio1234
+    volumes:
+      - ./cantaloupe.properties:/etc/cantaloupe.properties:ro
+      - ./lookup.rb:/etc/lookup.rb:ro
+    ports:
+      - 8000:80
+
+  minio:
+    container_name: iiif-minio
+    image: minio/minio:RELEASE.2025-02-28T09-55-16Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+      MINIO_SERVER_URL: http://localhost:9000
+      MINIO_ROOT_USER: minio1234
+      MINIO_ROOT_PASSWORD: minio1234
+    ports:
+      - 127.0.0.1:9000:9000
+      - 127.0.0.1:9001:9001
+    volumes:
+      - miniodata:/data
+
+  minio-buckets:
+    container_name: iiif-minio-buckets
+    image: minio/mc:latest
+
+    environment:
+      MC_HOST_cantaloupe: http://minio1234:minio1234@minio:9000
+
+    # Create all required buckets on the minio described above
+    command: mb -p cantaloupe/images cantaloupe/cache
+
+    depends_on:
+      - minio
+
+volumes:
+  miniodata:
+    driver: local

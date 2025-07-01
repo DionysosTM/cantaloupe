@@ -1,0 +1,26 @@
+diff --git a/src/main/java/edu/illinois/library/cantaloupe/image/exif/DirectoryDeserializer.java b/src/main/java/edu/illinois/library/cantaloupe/image/exif/DirectoryDeserializer.java
+index 5c461f0..cd0418f 100644
+--- a/src/main/java/edu/illinois/library/cantaloupe/image/exif/DirectoryDeserializer.java
++++ b/src/main/java/edu/illinois/library/cantaloupe/image/exif/DirectoryDeserializer.java
+@@ -90,10 +90,10 @@ public class DirectoryDeserializer extends JsonDeserializer<Directory> {
+ 
+                 if (tag == null) {
+                     throw new JsonParseException(parser,
+-                            "Field is missing tag");
++                            "Field " + field.toString() + " is missing tag in " + dirNode.toString());
+                 } else if (dataType == null) {
+                     throw new JsonParseException(parser,
+-                            "Field is missing data type");
++                            "Field " + tag.toString() + " is missing data type in " + dirNode.toString());
+                 }
+ 
+                 keysIter = field.fields();
+@@ -108,7 +108,7 @@ public class DirectoryDeserializer extends JsonDeserializer<Directory> {
+ 
+                 if (jsonValue == null || value == null) {
+                     throw new JsonParseException(parser,
+-                            "Field is missing value");
++                            "Field " + tag.toString() + " is missing value in " + dirNode.toString());
+                 }
+ 
+                 if (tag.isIFDPointer()) {
