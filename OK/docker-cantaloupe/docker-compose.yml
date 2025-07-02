@@ -32,7 +32,6 @@ services:
       S3CACHE_OBJECT_KEY_PREFIX: cache
       LOG_APPLICATION_LEVEL: warn
       LOG_ACCESS_CONSOLEAPPENDER_ENABLED: "true"
-      delegate_script.enabled: "true"
       TOTO: "titi"
 
   minio:
