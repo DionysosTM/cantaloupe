@@ -16,16 +16,18 @@ RUN apt-get update -qy && apt-get dist-upgrade -qy && \
 RUN adduser --system cantaloupe
 
 #COPY Cantaloupe-$CANTALOUPE_VERSION.zip .
-COPY ZIP/cantaloupe-$CANTALOUPE_VERSION .
+COPY ZIP/cantaloupe-4.1.5 /cantaloupe/cantaloupe-4.1.5
 COPY delegates.rb /cantaloupe/delegates.rb
 
 # Get and unpack Cantaloupe release archive
 #RUN unzip Cantaloupe-$CANTALOUPE_VERSION.zip \
-RUN  ln -s cantaloupe-$CANTALOUPE_VERSION cantaloupe \
-    && rm Cantaloupe-$CANTALOUPE_VERSION.zip \
+RUN ln -s /cantaloupe/cantaloupe-4.1.5 /cantaloupe/cantaloupe \
     && mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
     && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe \
-    && cp -rs /cantaloupe/deps/Linux-x86-64/* /usr/
+    && cp -rs /cantaloupe/cantaloupe-4.1.5/deps/Linux-x86-64/* /usr/
+
 
 USER cantaloupe
-CMD ["sh", "-c", "java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties.sample -jar /cantaloupe/cantaloupe-$CANTALOUPE_VERSION.war"]
+CMD ["sh", "-c", "java -Dcantaloupe.config=/cantaloupe/cantaloupe/cantaloupe.properties.sample -jar /cantaloupe/cantaloupe/cantaloupe-${CANTALOUPE_VERSION}.war"]
+
+

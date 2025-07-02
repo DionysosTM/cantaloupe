@@ -8,7 +8,7 @@ services:
     depends_on:
       - minio
     volumes:
-      - ./delegates.rb:/cantaloupe/delegates.rb
+      - ./delegates.rb:/cantaloupe/cantaloupe/delegates.rb
     environment:
       HTTP_HTTP2_ENABLED: "true"
       HTTPS_HTTP2_ENABLED: "true"
@@ -22,7 +22,7 @@ services:
       PROCESSOR_MANUAL_SELECTIONSTRATEGY_JP2: OpenJpegProcessor
       CACHE_SERVER_DERIVATIVE_ENABLED: "true"
       CACHE_SERVER_DERIVATIVE: S3Cache
-      CACHE_SERVIER_DERIVATIVE_TTL_SECONDS: 0
+      CACHE_SERVER_DERIVATIVE_TTL_SECONDS: 0
       CACHE_SERVER_PURGE_MISSING: "true"
       CACHE_SERVER_WORKER_ENABLED: "true"
       S3CACHE_ENDPOINT: http://minio:9000

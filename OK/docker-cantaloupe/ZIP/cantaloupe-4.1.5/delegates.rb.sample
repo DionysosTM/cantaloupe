@@ -207,8 +207,18 @@ class CustomDelegate
   #                                   or nil if not found.
   #
   def s3source_object_info(options = {})
+    identifier = context['identifier']
+    if identifier.start_with?("/iiif/2/")
+      identifier = identifier.sub("/iiif/2/", "")
+    end
+    # Extraire avant le segment des paramètres (full, max, default, etc.)
+    key = "caca/heap.jpg"
+    {
+      bucket: 'test',
+      key: key
+    }
   end
-
+  
   ##
   # Tells the server what overlay, if any, to apply to an image in response
   # to a request. Will be called upon all image requests to any endpoint if

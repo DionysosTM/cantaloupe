@@ -69,7 +69,7 @@ delegate_script.enabled = false
 # !! This can be an absolute path, or a filename; if only a filename is
 # specified, it will be searched for in the same folder as this file, and
 # then the current working directory.
-delegate_script.pathname = delegates.rb
+delegate_script.pathname = /cantaloupe/cantaloupe/delegates.rb
 
 # Enables the invocation cache, which caches method invocations and return
 # values in memory. See the user manual for more information.
@@ -205,7 +205,7 @@ S3Source.secret_key =
 S3Source.lookup_strategy = BasicLookupStrategy
 
 # !! Name of the bucket containing images to be served.
-S3Source.BasicLookupStrategy.bucket.name = TEST
+S3Source.BasicLookupStrategy.bucket.name =
 
 # Path within the bucket that will be prefixed to the identifier in the URL.
 # Trailing slash is important!
