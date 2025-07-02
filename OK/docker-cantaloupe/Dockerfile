@@ -15,11 +15,13 @@ RUN apt-get update -qy && apt-get dist-upgrade -qy && \
 # Run non privileged
 RUN adduser --system cantaloupe
 
-COPY Cantaloupe-$CANTALOUPE_VERSION.zip .
+#COPY Cantaloupe-$CANTALOUPE_VERSION.zip .
+COPY ZIP/cantaloupe-$CANTALOUPE_VERSION .
+COPY delegates.rb /cantaloupe/delegates.rb
 
 # Get and unpack Cantaloupe release archive
-RUN unzip Cantaloupe-$CANTALOUPE_VERSION.zip \
-    && ln -s cantaloupe-$CANTALOUPE_VERSION cantaloupe \
+#RUN unzip Cantaloupe-$CANTALOUPE_VERSION.zip \
+RUN  ln -s cantaloupe-$CANTALOUPE_VERSION cantaloupe \
     && rm Cantaloupe-$CANTALOUPE_VERSION.zip \
     && mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
     && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe \
