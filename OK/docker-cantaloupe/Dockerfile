@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 ENV CANTALOUPE_VERSION=4.1.5
 
